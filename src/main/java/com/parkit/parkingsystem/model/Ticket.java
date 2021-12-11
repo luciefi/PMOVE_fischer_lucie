@@ -1,12 +1,11 @@
 package com.parkit.parkingsystem.model;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Ticket {
     private int id;
     private ParkingSpot parkingSpot;
-    private String vehicleRegNumber;
+    private String vehicleRegistrationNumber;
     private double price;
     private Date inTime;
     private Date outTime;
@@ -27,12 +26,12 @@ public class Ticket {
         this.parkingSpot = parkingSpot;
     }
 
-    public String getVehicleRegNumber() {
-        return vehicleRegNumber;
+    public String getVehicleRegistrationNumber() {
+        return vehicleRegistrationNumber;
     }
 
-    public void setVehicleRegNumber(String vehicleRegNumber) {
-        this.vehicleRegNumber = vehicleRegNumber;
+    public void setVehicleRegistrationNumber(String vehicleRegistrationNumber) {
+        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
     }
 
     public double getPrice() {
