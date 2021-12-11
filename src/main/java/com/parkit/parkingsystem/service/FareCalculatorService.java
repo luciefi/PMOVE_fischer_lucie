@@ -12,7 +12,7 @@ public class FareCalculatorService {
 
         float durationInMilliseconds = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
         float durationInHour = durationInMilliseconds / (1000 * 3600);
-
+        
         if(durationInHour < .5){
             ticket.setPrice(0.0);
             return;
