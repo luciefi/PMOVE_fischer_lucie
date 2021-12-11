@@ -40,21 +40,21 @@ public class TicketDAO {
         }
     }
 
-    public Ticket getTicket(String vehicleRegNumber) {
+    public Ticket getTicket(String vehicleRegistrationNumber) {
         Connection connection = null;
         Ticket ticket = null;
         try {
             connection = dataBaseConfig.getConnection();
             PreparedStatement ps = connection.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-            ps.setString(1, vehicleRegNumber);
+            ps.setString(1, vehicleRegistrationNumber);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 ticket = new Ticket();
                 ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setId(rs.getInt(2));
-                ticket.setVehicleRegistrationNumber(vehicleRegNumber);
+                ticket.setVehicleRegistrationNumber(vehicleRegistrationNumber);
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
