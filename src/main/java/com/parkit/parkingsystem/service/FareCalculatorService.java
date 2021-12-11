@@ -15,15 +15,20 @@ public class FareCalculatorService {
 
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
-                ticket.setPrice(durationInHour * Fare.CAR_RATE_PER_HOUR);
+                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.CAR_RATE_PER_HOUR));
                 break;
             }
             case BIKE: {
-                ticket.setPrice(durationInHour * Fare.BIKE_RATE_PER_HOUR);
+                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.BIKE_RATE_PER_HOUR));
                 break;
             }
             default:
                 throw new IllegalArgumentException("Unkown Parking Type");
         }
+    }
+
+    static double computeRoundedPrice(double time, double price) {
+        double tmp = Math.round(time * price * 100);
+        return  tmp / 100.0;
     }
 }
