@@ -5,6 +5,7 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -31,7 +32,7 @@ public class ParkingDataBaseIT {
     private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
-    private static void setUp() throws Exception{
+    private static void setUp() throws Exception {
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -47,12 +48,12 @@ public class ParkingDataBaseIT {
     }
 
     @AfterAll
-    private static void tearDown(){
+    private static void tearDown() {
 
     }
 
     @Test
-    public void testParkingACar(){
+    public void testParkingACar() {
         //ARRANGE
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         //ACT
@@ -63,7 +64,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingLotExit(){
+    public void testParkingLotExit() {
         // ARRANGE
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -75,7 +76,34 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
         // ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 1.5").isEqualTo(1.5);
-        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 1000),new Date(System.currentTimeMillis()));
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 50000), new Date(System.currentTimeMillis() + 1000));
+    }
+
+    @Test
+    public void testParkingLotExitForKnownCustomer() {
+
+        // ARRANGE
+        testParkingACar();
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        Ticket setBackInTimeTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
+        setBackInTimeTicket.setInTime(new Date(System.currentTimeMillis() - 2 * 3600 * 1000));
+        dataBasePrepareService.clearDataBaseEntries();
+        Ticket previousTicket = new Ticket();
+        previousTicket.setInTime(new Date(System.currentTimeMillis() - 3600 * 100000));
+        previousTicket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, true));
+        previousTicket.setOutTime(new Date(System.currentTimeMillis() - 3600 * 99000));
+        previousTicket.setPrice(1.5);
+        previousTicket.setVehicleRegistrationNumber(vehicleRegistrationNumber);
+
+        ticketDAO.saveTicket(previousTicket);
+        ticketDAO.saveTicket(setBackInTimeTicket);
+
+        // ACT
+        parkingService.processExitingVehicle();
+        // ASSERT
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 2.85").isEqualTo(2.85);
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 50000), new Date(System.currentTimeMillis()));
+
     }
 
 }
