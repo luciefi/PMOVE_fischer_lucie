@@ -31,7 +31,7 @@ public class ParkingDataBaseIT {
     private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
-    private static void setUp() throws Exception{
+    private static void setUp() throws Exception {
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -47,12 +47,12 @@ public class ParkingDataBaseIT {
     }
 
     @AfterAll
-    private static void tearDown(){
+    private static void tearDown() {
 
     }
 
     @Test
-    public void testParkingACar(){
+    public void testParkingACar() {
         //ARRANGE
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         //ACT
@@ -63,19 +63,20 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingLotExit(){
+    public void testParkingLotExit() {
         // ARRANGE
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         Ticket setBackInTimeTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
         setBackInTimeTicket.setInTime(new Date(System.currentTimeMillis() - 3600 * 1000));
         dataBasePrepareService.clearDataBaseEntries();
-        ticketDAO.saveTicket(setBackInTimeTicket);
         // ACT
+        ticketDAO.saveTicket(setBackInTimeTicket);
         parkingService.processExitingVehicle();
         // ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 1.5").isEqualTo(1.5);
-        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 1000),new Date(System.currentTimeMillis()));
+        // TODO: remplacer l'intervalle par plus qu'une heure par rapport au départ
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 1000), new Date(System.currentTimeMillis() + 1000));
     }
 
 }
