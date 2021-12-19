@@ -68,15 +68,14 @@ public class ParkingDataBaseIT {
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         Ticket setBackInTimeTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
-        setBackInTimeTicket.setInTime(new Date(System.currentTimeMillis() - 3600 * 1000));
+        long inTime = System.currentTimeMillis() - 3600 * 1000;
+        setBackInTimeTicket.setInTime(new Date(inTime));
         dataBasePrepareService.clearDataBaseEntries();
         // ACT
         ticketDAO.saveTicket(setBackInTimeTicket);
         parkingService.processExitingVehicle();
         // ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 1.5").isEqualTo(1.5);
-        // TODO: remplacer l'intervalle par plus qu'une heure par rapport au départ
-        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 1000), new Date(System.currentTimeMillis() + 1000));
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isAfter(new Date(inTime + 3600));
     }
-
 }
