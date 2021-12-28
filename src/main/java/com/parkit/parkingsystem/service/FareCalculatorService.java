@@ -6,14 +6,18 @@ import com.parkit.parkingsystem.model.Ticket;
 public class FareCalculatorService {
 
     public void calculateFare(Ticket ticket) {
-        if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
+        if (ticket.getOutTime() == null) {
+            throw new IllegalArgumentException("Out time provided is null.");
+        }
+        if (ticket.getOutTime().before(ticket.getInTime())) {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
 
+
         float durationInMilliseconds = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
         float durationInHour = durationInMilliseconds / (1000 * 3600);
-        
-        if(durationInHour < .5){
+
+        if (durationInHour < .5) {
             ticket.setPrice(0.0);
             return;
         }
@@ -27,13 +31,15 @@ public class FareCalculatorService {
                 ticket.setPrice(computeRoundedPrice(durationInHour, Fare.BIKE_RATE_PER_HOUR));
                 break;
             }
-            default:
-                throw new IllegalArgumentException("Unkown Parking Type");
+            default: {
+                throw new IllegalArgumentException("Unknown Parking Type");
+            }
+
         }
     }
 
     static double computeRoundedPrice(double time, double price) {
         double tmp = Math.round(time * price * 100);
-        return  tmp / 100.0;
+        return tmp / 100.0;
     }
 }

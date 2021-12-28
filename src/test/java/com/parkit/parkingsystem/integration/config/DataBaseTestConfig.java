@@ -17,10 +17,10 @@ public class DataBaseTestConfig extends DataBaseConfig {
                 "jdbc:mysql://localhost:3306/P4_test","root","rootroot");
     }
 
-    public void closeConnection(Connection con){
-        if(con!=null){
+    public void closeConnection(Connection connection){
+        if(connection !=null){
             try {
-                con.close();
+                connection.close();
                 logger.info("Closing DB connection");
             } catch (SQLException e) {
                 logger.error("Error while closing connection",e);
