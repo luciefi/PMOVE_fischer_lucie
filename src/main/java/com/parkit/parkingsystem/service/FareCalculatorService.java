@@ -22,13 +22,15 @@ public class FareCalculatorService {
             return;
         }
 
+        float discount = isKnownCustomer ? 0.95f : 1f;
+
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
-                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.CAR_RATE_PER_HOUR));
+                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.CAR_RATE_PER_HOUR * discount));
                 break;
             }
             case BIKE: {
-                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.BIKE_RATE_PER_HOUR));
+                ticket.setPrice(computeRoundedPrice(durationInHour, Fare.BIKE_RATE_PER_HOUR * discount) );
                 break;
             }
             default: {
