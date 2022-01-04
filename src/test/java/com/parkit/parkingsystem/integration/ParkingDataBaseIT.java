@@ -34,9 +34,9 @@ public class ParkingDataBaseIT {
     @BeforeAll
     private static void setUp() throws Exception {
         parkingSpotDAO = new ParkingSpotDAO();
-        parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+        parkingSpotDAO.setDataBaseConfig(dataBaseTestConfig);
         ticketDAO = new TicketDAO();
-        ticketDAO.dataBaseConfig = dataBaseTestConfig;
+        ticketDAO.setDataBaseConfig(dataBaseTestConfig);
         dataBasePrepareService = new DataBasePrepareService();
     }
 
@@ -47,11 +47,6 @@ public class ParkingDataBaseIT {
         dataBasePrepareService.clearDataBaseEntries();
     }
 
-    @AfterAll
-    private static void tearDown() {
-
-    }
-
     @Test
     public void testParkingACar() {
         //ARRANGE
@@ -60,7 +55,7 @@ public class ParkingDataBaseIT {
         parkingService.processIncomingVehicle();
         //ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber)).as("A ticket associated to the vehicle registration number should be found").isNotNull();
-        assertThat(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).as("Next spot available should be #2").isEqualTo(2);
+        assertThat(parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR)).as("Next spot available should be #2").isEqualTo(2);
     }
 
     @Test
@@ -82,25 +77,29 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExitForKnownCustomer() {
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
         // ARRANGE
+
         testParkingACar();
-        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         Ticket setBackInTimeTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
         setBackInTimeTicket.setInTime(new Date(System.currentTimeMillis() - 2 * 3600 * 1000));
         dataBasePrepareService.clearDataBaseEntries();
+
         Ticket previousTicket = new Ticket();
         previousTicket.setInTime(new Date(System.currentTimeMillis() - 3600 * 100000));
         previousTicket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, true));
-        previousTicket.setOutTime(new Date(System.currentTimeMillis() - 3600 * 99000));
-        previousTicket.setPrice(1.5);
         previousTicket.setVehicleRegistrationNumber(vehicleRegistrationNumber);
-
         ticketDAO.saveTicket(previousTicket);
-        ticketDAO.saveTicket(setBackInTimeTicket);
+        Ticket savedPreviousTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
+        savedPreviousTicket.setOutTime(new Date(System.currentTimeMillis() - 3600 * 99000));
+        savedPreviousTicket.setPrice(1.5);
+        ticketDAO.updateTicket(savedPreviousTicket);
 
         // ACT
+        ticketDAO.saveTicket(setBackInTimeTicket);
         parkingService.processExitingVehicle();
+
         // ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 2.85").isEqualTo(2.85);
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 50000), new Date(System.currentTimeMillis()));

@@ -5,7 +5,7 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
-    public void calculateFare(Ticket ticket) {
+    public void calculateFare(Ticket ticket, boolean isKnownCustomer) {
         if (ticket.getOutTime() == null) {
             throw new IllegalArgumentException("Out time provided is null.");
         }

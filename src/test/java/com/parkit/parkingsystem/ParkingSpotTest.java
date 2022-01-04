@@ -53,8 +53,8 @@ public class ParkingSpotTest {
         // ARRANGE
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         // ACT
-        parkingSpot.setId(3);
+        parkingSpot.setNumber(3);
         // ASSERT
-        assertThat(parkingSpot.getId()).isEqualTo(3);
+        assertThat(parkingSpot.getNumber()).isEqualTo(3);
     }
 }

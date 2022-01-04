@@ -17,7 +17,7 @@ class ParkingSpotDAOTest {
     @BeforeAll
     public static void setUp(){
         parkingSpotDAO = new ParkingSpotDAO();
-        parkingSpotDAO.dataBaseConfig = new DataBaseTestConfig();
+        parkingSpotDAO.setDataBaseConfig(new DataBaseTestConfig());
         dataBasePrepareService = new DataBasePrepareService();
     }
 
@@ -27,13 +27,13 @@ class ParkingSpotDAOTest {
     }
 
     @Test
-    public void getNextAvailableSlotForCarTest() {
-        assertEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
+    public void getNextAvailableSpotForCarTest() {
+        assertEquals(1, parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR));
     }
 
     @Test
-    public void getNextAvailableSlotForBikeTest() {
-        assertEquals(4, parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE));
+    public void getNextAvailableSpotForBikeTest() {
+        assertEquals(4, parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE));
     }
 
 }

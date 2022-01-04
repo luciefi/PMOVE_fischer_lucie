@@ -15,26 +15,36 @@ import java.sql.Timestamp;
 
 public class TicketDAO {
 
-    private static final Logger logger = LogManager.getLogger("TicketDAO");
+    private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
 
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    private DataBaseConfig dataBaseConfig = new DataBaseConfig();
+
+    public DataBaseConfig getDataBaseConfig() {
+        return dataBaseConfig;
+    }
+
+    public void setDataBaseConfig(DataBaseConfig dataBaseConfig) {
+        this.dataBaseConfig = dataBaseConfig;
+    }
 
     public boolean saveTicket(Ticket ticket) {
         Connection connection = null;
+        PreparedStatement ps = null;
         try {
             connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.SAVE_TICKET);
-            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-            //ps.setInt(1,ticket.getId());
-            ps.setInt(1, ticket.getParkingSpot().getId());
+            ps = connection.prepareStatement(DBConstants.SAVE_TICKET);
+            ps.setInt(1, ticket.getParkingSpot().getNumber());
             ps.setString(2, ticket.getVehicleRegistrationNumber());
             ps.setDouble(3, ticket.getPrice());
             ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
-            ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
-            return ps.execute();
+            boolean result = ps.execute();
+            return result;
         } catch (Exception ex) {
-            logger.error("Error fetching next available slot", ex);
+            LOGGER.error("Error fetching next available spot", ex);
         } finally {
+            if(ps != null){
+                dataBaseConfig.closePreparedStatement(ps);
+            }
             dataBaseConfig.closeConnection(connection);
         }
         return false;
@@ -43,12 +53,14 @@ public class TicketDAO {
     public Ticket getTicket(String vehicleRegistrationNumber) {
         Connection connection = null;
         Ticket ticket = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.GET_TICKET);
+            ps = connection.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1, vehicleRegistrationNumber);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next()) {
                 ticket = new Ticket();
                 ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
@@ -60,11 +72,15 @@ public class TicketDAO {
                 ticket.setOutTime(rs.getTimestamp(5));
                 return ticket;
             }
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
         } catch (Exception ex) {
-            logger.error("Error fetching next available slot", ex);
+            LOGGER.error("Error fetching next available spot", ex);
         } finally {
+            if(rs != null){
+                dataBaseConfig.closeResultSet(rs);
+            }
+            if(ps != null){
+                dataBaseConfig.closePreparedStatement(ps);
+            }
             dataBaseConfig.closeConnection(connection);
         }
         return ticket;
@@ -72,17 +88,21 @@ public class TicketDAO {
 
     public boolean updateTicket(Ticket ticket) {
         Connection connection = null;
+        PreparedStatement ps = null;
         try {
             connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.UPDATE_TICKET);
+            ps = connection.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
             ps.execute();
             return true;
         } catch (Exception ex) {
-            logger.error("Error saving ticket info", ex);
+            LOGGER.error("Error saving ticket info", ex);
         } finally {
+            if(ps != null){
+                dataBaseConfig.closePreparedStatement(ps);
+            }
             dataBaseConfig.closeConnection(connection);
         }
         return false;
@@ -90,20 +110,26 @@ public class TicketDAO {
 
     public boolean isCustomerKnown(String vehicleRegistrationNumber) {
         Connection connection = null;
-        Ticket ticket = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.GET_CUSTOMER_STATUS);
+            ps = connection.prepareStatement(DBConstants.GET_CUSTOMER_STATUS);
             ps.setString(1, vehicleRegistrationNumber);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
-            }
+            rs = ps.executeQuery();
+            boolean isCustomerKnown = rs.next();
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
+            return isCustomerKnown;
         } catch (Exception ex) {
-            logger.error("Error fetching customer status", ex);
+            LOGGER.error("Error fetching customer status", ex);
         } finally {
+            if(rs != null){
+                dataBaseConfig.closeResultSet(rs);
+            }
+            if(ps != null){
+                dataBaseConfig.closePreparedStatement(ps);
+            }
             dataBaseConfig.closeConnection(connection);
         }
         return false;
