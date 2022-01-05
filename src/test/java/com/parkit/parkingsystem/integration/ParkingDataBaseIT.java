@@ -83,7 +83,8 @@ public class ParkingDataBaseIT {
 
         testParkingACar();
         Ticket setBackInTimeTicket = ticketDAO.getTicket(vehicleRegistrationNumber);
-        setBackInTimeTicket.setInTime(new Date(System.currentTimeMillis() - 2 * 3600 * 1000));
+        long inTime = System.currentTimeMillis() - 2 * 3600 * 1000;
+        setBackInTimeTicket.setInTime(new Date(inTime));
         dataBasePrepareService.clearDataBaseEntries();
 
         Ticket previousTicket = new Ticket();
@@ -102,6 +103,6 @@ public class ParkingDataBaseIT {
 
         // ASSERT
         assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getPrice()).as("Parking fare should be 2.85").isEqualTo(2.85);
-        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isBetween(new Date(System.currentTimeMillis() - 50000), new Date(System.currentTimeMillis()));
+        assertThat(ticketDAO.getTicket(vehicleRegistrationNumber).getOutTime()).as("out time should be now").isAfter(new Date(inTime + 2 * 3600));
     }
 }

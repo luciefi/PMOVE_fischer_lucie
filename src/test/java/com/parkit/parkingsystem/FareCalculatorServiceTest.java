@@ -44,7 +44,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarForNewCustomer() {
+    public void calculateFareCarForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
@@ -58,7 +58,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarForKnownCustomer() {
+    public void calculateFareCarForKnownCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
@@ -72,7 +72,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeForNewCustomer() {
+    public void calculateFareBikeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
@@ -86,7 +86,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeForKnownCustomer() {
+    public void calculateFareBikeForKnownCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
@@ -100,7 +100,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareUnkownTypeForNewCustomer() {
+    public void calculateFareUnkownTypeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
@@ -113,7 +113,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeWithFutureInTimeForNewCustomer() {
+    public void calculateFareBikeWithFutureInTimeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() + (60 * 60 * 1000));
         Date outTime = new Date();
@@ -126,7 +126,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeWithNullOutTime() {
+    public void calculateFareBikeWithNullOutTimeTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() + (60 * 60 * 1000));
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
@@ -137,7 +137,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeWithLessThanOneHourParkingTime() {
+    public void calculateFareBikeWithLessThanOneHourParkingTimeTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (45 * 60 * 1000));
         Date outTime = new Date();
@@ -151,7 +151,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarWithLessThanOneHourParkingTimeForNewCustomer() {
+    public void calculateFareCarWithLessThanOneHourParkingTimeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (45 * 60 * 1000));
         Date outTime = new Date();
@@ -165,7 +165,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeWithLessThan30minutesParkingTimeForNewCustomer() {
+    public void calculateFareBikeWithLessThan30minutesParkingTimeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (25 * 60 * 1000));
         Date outTime = new Date();
@@ -179,7 +179,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarWithLessThan30minutesParkingTimeForNewCustomer() {
+    public void calculateFareCarWithLessThan30minutesParkingTimeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (25 * 60 * 1000));
         Date outTime = new Date();
@@ -193,7 +193,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarWithMoreThanADayParkingTimeForNewCustomer() {
+    public void calculateFareCarWithMoreThanADayParkingTimeForNewCustomerTest() {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (24 * 60 * 60 * 1000));
         Date outTime = new Date();

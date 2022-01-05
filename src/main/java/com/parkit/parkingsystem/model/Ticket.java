@@ -14,7 +14,7 @@ public class Ticket {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -22,7 +22,7 @@ public class Ticket {
         return new ParkingSpot(parkingSpot.getNumber(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
     }
 
-    public void setParkingSpot(ParkingSpot parkingSpot) {
+    public void setParkingSpot(final ParkingSpot parkingSpot) {
         this.parkingSpot = new ParkingSpot(parkingSpot.getNumber(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
     }
 
@@ -30,7 +30,7 @@ public class Ticket {
         return vehicleRegistrationNumber;
     }
 
-    public void setVehicleRegistrationNumber(String vehicleRegistrationNumber) {
+    public void setVehicleRegistrationNumber(final String vehicleRegistrationNumber) {
         this.vehicleRegistrationNumber = vehicleRegistrationNumber;
     }
 
@@ -38,7 +38,7 @@ public class Ticket {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(final double price) {
         this.price = price;
     }
 
@@ -46,7 +46,7 @@ public class Ticket {
         return new Date(inTime.getTime());
     }
 
-    public void setInTime(Date inTime) {
+    public void setInTime(final Date inTime) {
         this.inTime = new Date(inTime.getTime());
     }
 
@@ -57,7 +57,7 @@ public class Ticket {
         return new Date(outTime.getTime());
     }
 
-    public void setOutTime(Date outTime) {
+    public void setOutTime(final Date outTime) {
         if (outTime != null) {
             this.outTime = new Date(outTime.getTime());
         }

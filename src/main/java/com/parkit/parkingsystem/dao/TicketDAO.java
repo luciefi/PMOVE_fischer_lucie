@@ -23,11 +23,11 @@ public class TicketDAO {
         return dataBaseConfig;
     }
 
-    public void setDataBaseConfig(DataBaseConfig dataBaseConfig) {
+    public void setDataBaseConfig(final DataBaseConfig dataBaseConfig) {
         this.dataBaseConfig = dataBaseConfig;
     }
 
-    public boolean saveTicket(Ticket ticket) {
+    public boolean saveTicket(final Ticket ticket) {
         Connection connection = null;
         PreparedStatement ps = null;
         try {
@@ -42,7 +42,7 @@ public class TicketDAO {
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available spot", ex);
         } finally {
-            if(ps != null){
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);
@@ -50,7 +50,7 @@ public class TicketDAO {
         return false;
     }
 
-    public Ticket getTicket(String vehicleRegistrationNumber) {
+    public Ticket getTicket(final String vehicleRegistrationNumber) {
         Connection connection = null;
         Ticket ticket = null;
         PreparedStatement ps = null;
@@ -75,10 +75,10 @@ public class TicketDAO {
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available spot", ex);
         } finally {
-            if(rs != null){
+            if (rs != null) {
                 dataBaseConfig.closeResultSet(rs);
             }
-            if(ps != null){
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);
@@ -86,7 +86,7 @@ public class TicketDAO {
         return ticket;
     }
 
-    public boolean updateTicket(Ticket ticket) {
+    public boolean updateTicket(final Ticket ticket) {
         Connection connection = null;
         PreparedStatement ps = null;
         try {
@@ -100,7 +100,7 @@ public class TicketDAO {
         } catch (Exception ex) {
             LOGGER.error("Error saving ticket info", ex);
         } finally {
-            if(ps != null){
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);
@@ -108,7 +108,7 @@ public class TicketDAO {
         return false;
     }
 
-    public boolean isCustomerKnown(String vehicleRegistrationNumber) {
+    public boolean isCustomerKnown(final String vehicleRegistrationNumber) {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -124,10 +124,10 @@ public class TicketDAO {
         } catch (Exception ex) {
             LOGGER.error("Error fetching customer status", ex);
         } finally {
-            if(rs != null){
+            if (rs != null) {
                 dataBaseConfig.closeResultSet(rs);
             }
-            if(ps != null){
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);

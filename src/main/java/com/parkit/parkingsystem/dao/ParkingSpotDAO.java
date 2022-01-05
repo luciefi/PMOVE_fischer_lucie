@@ -20,13 +20,13 @@ public class ParkingSpotDAO {
         return dataBaseConfig;
     }
 
-    public void setDataBaseConfig(DataBaseConfig dataBaseTestConfig) {
+    public void setDataBaseConfig(final DataBaseConfig dataBaseTestConfig) {
         this.dataBaseConfig = dataBaseTestConfig;
     }
 
-    public int getNextAvailableSpot(ParkingType parkingType){
+    public int getNextAvailableSpot(final ParkingType parkingType) {
         Connection connection = null;
-        int nextAvailableSpot =-1;
+        int nextAvailableSpot = -1;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -34,16 +34,16 @@ public class ParkingSpotDAO {
             ps = connection.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
             ps.setString(1, parkingType.toString());
             rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 nextAvailableSpot = rs.getInt(1);
             }
-        }catch (Exception ex){
-            LOGGER.error("Error fetching next available spot",ex);
-        }finally {
-            if(rs != null){
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching next available spot", ex);
+        } finally {
+            if (rs != null) {
                 dataBaseConfig.closeResultSet(rs);
             }
-            if(ps != null){
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);
@@ -51,7 +51,7 @@ public class ParkingSpotDAO {
         return nextAvailableSpot;
     }
 
-    public boolean updateParking(ParkingSpot parkingSpot){
+    public boolean updateParking(final ParkingSpot parkingSpot) {
         Connection connection = null;
         PreparedStatement ps = null;
         try {
@@ -61,11 +61,11 @@ public class ParkingSpotDAO {
             ps.setInt(2, parkingSpot.getNumber());
             int updateRowCount = ps.executeUpdate();
             return (updateRowCount == 1);
-        }catch (Exception ex){
-            LOGGER.error("Error updating availability for a spot",ex);
+        } catch (Exception ex) {
+            LOGGER.error("Error updating availability for a spot", ex);
             return false;
-        }finally {
-            if(ps != null){
+        } finally {
+            if (ps != null) {
                 dataBaseConfig.closePreparedStatement(ps);
             }
             dataBaseConfig.closeConnection(connection);

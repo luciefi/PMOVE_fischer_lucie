@@ -21,7 +21,7 @@ public class ParkingService {
     private final ParkingSpotDAO parkingSpotDAO;
     private final TicketDAO ticketDAO;
 
-    public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO) {
+    public ParkingService(final InputReaderUtil inputReaderUtil, final ParkingSpotDAO parkingSpotDAO, final TicketDAO ticketDAO) {
         this.inputReaderUtil = inputReaderUtil;
         this.parkingSpotDAO = parkingSpotDAO;
         this.ticketDAO = ticketDAO;
@@ -33,8 +33,9 @@ public class ParkingService {
             if (parkingSpot != null && parkingSpot.getNumber() > 0) {
                 String vehicleRegistrationNumber = getVehicleRegistrationNumber();
 
-                if(ticketDAO.isCustomerKnown(vehicleRegistrationNumber)){
-                    System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+                if (ticketDAO.isCustomerKnown(vehicleRegistrationNumber)) {
+                    System.out.println(
+                            "Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
                 }
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);
@@ -50,7 +51,7 @@ public class ParkingService {
         }
     }
 
-    private Ticket createTicket(ParkingSpot parkingSpot, String vehicleRegistrationNumber, Date inTime) {
+    private Ticket createTicket(final ParkingSpot parkingSpot, final String vehicleRegistrationNumber, final Date inTime) {
         Ticket ticket = new Ticket();
         //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
         ticket.setParkingSpot(parkingSpot);
@@ -90,16 +91,13 @@ public class ParkingService {
         System.out.println("2 BIKE");
         int input = inputReaderUtil.readSelection();
         switch (input) {
-            case 1: {
+            case 1:
                 return ParkingType.CAR;
-            }
-            case 2: {
+            case 2:
                 return ParkingType.BIKE;
-            }
-            default: {
+            default:
                 System.out.println("Incorrect input provided");
                 throw new IllegalArgumentException("Entered input is invalid");
-            }
         }
     }
 
@@ -115,7 +113,9 @@ public class ParkingService {
                 parkingSpot.setAvailable(true);
                 parkingSpotDAO.updateParking(parkingSpot);
                 System.out.println("Please pay the parking fare:" + ticket.getPrice());
-                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegistrationNumber() + " is:" + outTime);
+                System.out.println(
+                        "Recorded out-time for vehicle number:" + ticket.getVehicleRegistrationNumber()
+                                + " is:" + outTime);
             } else {
                 System.out.println("Unable to update ticket information. Error occurred");
             }
