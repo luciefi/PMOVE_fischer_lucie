@@ -12,46 +12,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class ParkingSpotDAO {
-    private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
+    private static final Logger LOGGER = LogManager.getLogger("ParkingSpotDAO");
 
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    private DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-    public int getNextAvailableSlot(ParkingType parkingType){
-        Connection connection = null;
-        int nextAvailableSlot =-1;
-
-        try {
-            connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
-            ps.setString(1, parkingType.toString());
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                nextAvailableSlot = rs.getInt(1);;
-            }
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-        }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
-        }finally {
-            dataBaseConfig.closeConnection(connection);
-        }
-        return nextAvailableSlot;
+    public DataBaseConfig getDataBaseConfig() {
+        return dataBaseConfig;
     }
 
-    public boolean updateParking(ParkingSpot parkingSpot){
+    public void setDataBaseConfig(final DataBaseConfig dataBaseTestConfig) {
+        this.dataBaseConfig = dataBaseTestConfig;
+    }
+
+    public int getNextAvailableSpot(final ParkingType parkingType) {
         Connection connection = null;
+        int nextAvailableSpot = -1;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             connection = dataBaseConfig.getConnection();
-            PreparedStatement ps = connection.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
+            ps = connection.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
+            ps.setString(1, parkingType.toString());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                nextAvailableSpot = rs.getInt(1);
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching next available spot", ex);
+        } finally {
+            if (rs != null) {
+                dataBaseConfig.closeResultSet(rs);
+            }
+            if (ps != null) {
+                dataBaseConfig.closePreparedStatement(ps);
+            }
+            dataBaseConfig.closeConnection(connection);
+        }
+        return nextAvailableSpot;
+    }
+
+    public boolean updateParking(final ParkingSpot parkingSpot) {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        try {
+            connection = dataBaseConfig.getConnection();
+            ps = connection.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
             ps.setBoolean(1, parkingSpot.isAvailable());
-            ps.setInt(2, parkingSpot.getId());
+            ps.setInt(2, parkingSpot.getNumber());
             int updateRowCount = ps.executeUpdate();
-            dataBaseConfig.closePreparedStatement(ps);
             return (updateRowCount == 1);
-        }catch (Exception ex){
-            logger.error("Error updating availability for a spot",ex);
+        } catch (Exception ex) {
+            LOGGER.error("Error updating availability for a spot", ex);
             return false;
-        }finally {
+        } finally {
+            if (ps != null) {
+                dataBaseConfig.closePreparedStatement(ps);
+            }
             dataBaseConfig.closeConnection(connection);
         }
     }

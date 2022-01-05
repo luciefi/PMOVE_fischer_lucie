@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.dao;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.ParkingSpot;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,9 @@ class ParkingSpotDAOTest {
     private static DataBasePrepareService dataBasePrepareService;
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
         parkingSpotDAO = new ParkingSpotDAO();
-        parkingSpotDAO.dataBaseConfig = new DataBaseTestConfig();
+        parkingSpotDAO.setDataBaseConfig(new DataBaseTestConfig());
         dataBasePrepareService = new DataBasePrepareService();
     }
 
@@ -27,13 +28,18 @@ class ParkingSpotDAOTest {
     }
 
     @Test
-    public void getNextAvailableSlotForCarTest() {
-        assertEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
+    public void getNextAvailableSpotForCarTest() {
+        assertEquals(1, parkingSpotDAO.getNextAvailableSpot(ParkingType.CAR));
     }
 
     @Test
-    public void getNextAvailableSlotForBikeTest() {
-        assertEquals(4, parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE));
+    public void getNextAvailableSpotForBikeTest() {
+        assertEquals(4, parkingSpotDAO.getNextAvailableSpot(ParkingType.BIKE));
+    }
+
+    @Test
+    public void updateParkingTest() {
+        assertEquals(true, parkingSpotDAO.updateParking(new ParkingSpot(1, ParkingType.CAR, false)));
     }
 
 }
